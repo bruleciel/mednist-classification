@@ -1,32 +1,44 @@
+
+import os
 import io
 
-
-from PIL import Image
-from torchvision import models
 import torchvision.transforms as transforms
+from MedNet import MedNet
+import torchvision as tv
+import torch
+from PIL import Image
+import onnx
 
 
-def get_model():
-    model = models.densenet121(pretrained=True)
-    model.eval()
+def get_model() :
+    # Preprocessing: load the ONNX model
+    model_path = os.path.join('models', 'MedNet.onnx')
+    model = onnx.load(model_path)
+    # Check the model
+    try:
+        onnx.checker.check_model(model)
+    except onnx.checker.ValidationError as e:
+        print('The model is invalid: %s' % e)
+    else:
+        print('The model is valid!')
     return model
 
+def transform_image(image_bytes) : 
+    img = Image.open(io.BytesIO(image_bytes))
+    img_y = scaleImage(img)
+    img_y.unsqueeze_(0)
+    return img_y
 
-def transform_image(image_bytes):
-    my_transforms = transforms.Compose([transforms.Resize(255),
-                                        transforms.CenterCrop(224),
-                                        transforms.ToTensor(),
-                                        transforms.Normalize(
-                                            [0.485, 0.456, 0.406],
-                                            [0.229, 0.224, 0.225])])
-    image = Image.open(io.BytesIO(image_bytes))
-    return my_transforms(image).unsqueeze(0)
-
-
-# ImageNet classes are often of the form `can_opener` or `Egyptian_cat`
-# will use this method to properly format it so that we get
-# `Can Opener` or `Egyptian Cat`
 def format_class_name(class_name):
-    class_name = class_name.replace('_', ' ')
     class_name = class_name.title()
     return class_name
+
+# Pass a PIL image, return a tensor
+def scaleImage(x):          
+    toTensor = tv.transforms.ToTensor()
+    y = toTensor(x)
+    if(y.min() < y.max()):  
+        y = (y - y.min())/(y.max() - y.min()) 
+    z = y - y.mean()        
+    return z
+

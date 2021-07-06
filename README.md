@@ -1,10 +1,6 @@
-# PyTorch Flask API
+# Medical Image Classification Using the MedNIST Dataset
 
-
-Check the demo [here](https://pytorch-imagenet.herokuapp.com/).
-
-If you'd like to check a super simple API server, then check [this repo](https://github.com/avinassh/pytorch-flask-api).
-
+Using Pytorch and Flask
 
 ## Requirements
 
@@ -18,11 +14,6 @@ Install them from `requirements.txt`:
 Run the server:
 
     python app.py
-
-
-## Heroku Deployment
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/avinassh/pytorch-flask-api-heroku)
 
 
 ## License
