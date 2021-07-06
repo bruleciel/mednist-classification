@@ -12,13 +12,13 @@ app = Flask(__name__)
 def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
+            print("redirection")
             return redirect(request.url)
         file = request.files.get('file')
         if not file:
             return
         img_bytes = file.read()
         class_id, class_name = get_prediction(image_bytes=img_bytes)
-        class_name = format_class_name(class_name)
         return render_template('result.html', class_id=class_id,
                                class_name=class_name)
     return render_template('index.html')
