@@ -1,3 +1,4 @@
+# IMPORTS
 import json
 
 from commons import get_model, transform_image
@@ -7,14 +8,15 @@ import onnx
 import os
 import onnxruntime
 
-
+# ACCES AU MODELE ET AUX CLASSES
 model_path = os.path.join('models', 'MedNet.onnx')
 ort_session = onnxruntime.InferenceSession(model_path)
 imagenet_class_index = json.load(open('imagenet_class_index.json'))
 
-
+# FONCTIONS LIEES AU MODELE
 def to_numpy(tensor):
     return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
+
 
 def get_prediction(image_bytes):
     try:
@@ -24,4 +26,4 @@ def get_prediction(image_bytes):
         outputs = ort_outs[0]
     except Exception:
         return 404, 'error'
-    return {imagenet_class_index.get(str(outputs.argmax())),outputs.argmax()}
+    return {imagenet_class_index.get(str(outputs.argmax())), outputs.argmax()}
