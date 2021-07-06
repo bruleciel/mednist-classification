@@ -3,7 +3,6 @@ import os
 import io
 
 import torchvision.transforms as transforms
-from MedNet import MedNet
 import torchvision as tv
 import torch
 from PIL import Image
